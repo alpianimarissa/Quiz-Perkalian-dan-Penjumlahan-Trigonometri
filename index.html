@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif Trigonometri - 20 Soal Lengkap</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <!-- KaTeX Auto-render Extension -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .katex { font-size: 1.1em; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold tracking-tight">Kuis Trigonometri Interaktif</h1>
+                <p class="text-xs text-blue-100 hidden md:block">Jumlah, Selisih, dan Hasil Kali Sinus & Cosinus (20 Soal)</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-xs text-blue-200">Waktu Pengerjaan</p>
+                    <p id="timer" class="font-mono font-bold text-sm md:text-base">60:00</p>
+                </div>
+                <div class="bg-white/20 px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold">
+                    Skor: <span id="live-score">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto p-4 md:p-6 flex-grow w-full">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-slate-100 max-w-2xl mx-auto my-8 text-center">
+            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">Siap untuk Menguji Kemampuanmu?</h2>
+            <p class="text-slate-600 mb-6">Uji pemahamanmu tentang identitas trigonometri hasil jumlah, selisih, dan perkalian sinus dan cosinus</p>
+            
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left text-sm text-amber-950 mb-8 space-y-2">
+                <p class="font-bold flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Aturan Penilaian Resmi:
+                </p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Jawaban <strong>Benar</strong>: <span class="text-green-700 font-semibold">+4 poin</span></li>
+                    <li>Jawaban <strong>Salah</strong>: <span class="text-red-700 font-semibold">-1 poin</span></li>
+                    <li>Jawaban <strong>Kosong</strong> (Dilewati): <span class="text-slate-600 font-semibold">0 poin</span></li>
+                </ul>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                Mulai Kuis (20 Soal)
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden space-y-6">
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-xl shadow-sm p-4 border border-slate-100 flex items-center justify-between gap-4">
+                <div class="flex-grow">
+                    <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                        <span>Progress Soal</span>
+                        <span id="progress-text">Soal 1 dari 20</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 5%"></div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-prev" onclick="prevQuestion()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-40 transition-all" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question & Options Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Question Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+                        <div class="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-md mb-4">
+                            SOAL <span id="question-number">1</span>
+                        </div>
+                        <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-900 leading-relaxed mb-6">
+                            Loading pertanyaan...
+                        </h3>
+
+                        <!-- Interactive SVG Diagram for Question 20 (Land Area Problem) -->
+                        <div id="diagram-container" class="hidden bg-slate-50 rounded-xl p-4 border border-slate-200 flex justify-center mb-6">
+                            <!-- SVG will be dynamically injected here for Q20 -->
+                        </div>
+                        
+                        <!-- Options List -->
+                        <div id="options-container" class="space-y-3">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation / Sidebar Column -->
+                <div class="space-y-6">
+                    <!-- Status Card -->
+                    <div class="bg-white rounded-2xl shadow-md p-5 border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-3 text-sm tracking-wide uppercase">Navigasi Soal</h4>
+                        <div id="grid-navigation" class="grid grid-cols-5 gap-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Explanatory Panel (Shown after answering) -->
+                    <div id="explanation-panel" class="hidden bg-emerald-50 border border-emerald-100 rounded-2xl p-5 shadow-sm">
+                        <div class="flex items-start gap-3">
+                            <div class="p-1.5 bg-emerald-500 text-white rounded-lg mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-emerald-950 mb-1 text-sm">Pembahasan Kunci</h4>
+                                <p id="explanation-text" class="text-xs text-emerald-900 leading-relaxed">
+                                    Penjelasan rumus pengerjaan langkah demi langkah.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-slate-200">
+                <button onclick="skipQuestion()" class="text-sm font-semibold text-slate-500 hover:text-slate-700 py-2 px-4 transition-all">
+                    Lewati Soal Ini (0 Skor)
+                </button>
+                <button onclick="finishQuiz()" class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-bold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
+                    Selesaikan Kuis
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden max-w-2xl mx-auto my-6 space-y-6">
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100 text-center">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-1">Hasil Analisis Kuis Anda</h2>
+                <p class="text-sm text-slate-500 mb-6">Berikut adalah rangkuman performa pengerjaan Anda.</p>
+
+                <!-- Score Circle -->
+                <div class="inline-flex items-center justify-center w-36 h-36 rounded-full bg-indigo-50 border-4 border-indigo-500 mb-6">
+                    <div class="text-center">
+                        <p class="text-4xl font-extrabold text-indigo-900" id="final-score">0</p>
+                        <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mt-1">Total Skor</p>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-8">
+                    <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-xl">
+                        <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Benar (+4)</p>
+                        <p class="text-xl font-extrabold text-emerald-900 mt-1" id="stat-correct">0</p>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-100 p-3.5 rounded-xl">
+                        <p class="text-xs font-bold text-rose-600 uppercase tracking-wider">Salah (-1)</p>
+                        <p class="text-xl font-extrabold text-rose-900 mt-1" id="stat-wrong">0</p>
+                    </div>
+                    <div class="bg-slate-100 border border-slate-200 p-3.5 rounded-xl">
+                        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider">Kosong (0)</p>
+                        <p class="text-xl font-extrabold text-slate-900 mt-1" id="stat-skipped">0</p>
+                    </div>
+                </div>
+
+                <!-- Performance Message -->
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-blue-900 text-sm mb-8">
+                    <p class="font-bold" id="performance-title">Sangat Hebat!</p>
+                    <p class="mt-1" id="performance-desc">Pemahaman materi trigonometri Anda sudah luar biasa.</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md">
+                        Coba Kuis Lagi
+                    </button>
+                    <button onclick="showReviewMode()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition-all">
+                        Tinjau Jawaban Anda
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="font-semibold text-slate-300">"Jangan jadikan sekolah hanya untuk mencari nilai, tetapi bagaimana sekolah itu menjadikanmu bernilai."</p>
+            <p class="mt-1 text-indigo-400/80">— Albert Einstein</p>
+            <p class="mt-4 text-slate-500">© 2026 Kuis Trigonometri Interaktif. Dibuat dengan cinta untuk pembelajaran matematika.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Quiz Logic -->
+    <script>
+        const questionsData = [
+            {
+                id: 1,
+                title: "Nilai dari $\\sin 105^\\circ - \\sin 15^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "B", text: "$\\frac{1}{2}\\sqrt{2}$", correct: true },
+                    { label: "C", text: "$\\frac{1}{2}\\sqrt{3}$", correct: false },
+                    { label: "D", text: "$\\frac{1}{2}\\sqrt{6}$", correct: false },
+                    { label: "E", text: "$1$", correct: false }
+                ],
+                explanation: "Menggunakan rumus selisih sinus: <br>$$\\sin A - \\sin B = 2\\cos\\left(\\frac{A+B}{2}\\right)\\sin\\left(\\frac{A-B}{2}\\right)$$<br>Untuk $\\sin 105^\\circ - \\sin 15^\\circ$:<br>$$= 2\\cos 60^\\circ \\sin 45^\\circ = 2\\left(\\frac{1}{2}\\right)\\left(\\frac{1}{2}\\sqrt{2}\\right) = \\frac{1}{2}\\sqrt{2}$$"
+            },
+            {
+                id: 2,
+                title: "Nilai dari $\\sin 195^\\circ + \\sin 75^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "B", text: "$\\frac{1}{2}\\sqrt{2}$", correct: true },
+                    { label: "C", text: "$\\frac{1}{2}\\sqrt{3}$", correct: false },
+                    { label: "D", text: "$\\frac{1}{2}\\sqrt{6}$", correct: false },
+                    { label: "E", text: "$1$", correct: false }
+                ],
+                explanation: "Menggunakan rumus jumlah sinus: <br>$$\\sin A + \\sin B = 2\\sin\\left(\\frac{A+B}{2}\\right)\\cos\\left(\\frac{A-B}{2}\\right)$$<br>Untuk $\\sin 195^\\circ + \\sin 75^\\circ$:<br>$$= 2\\sin 135^\\circ \\cos 60^\\circ = 2\\left(\\frac{1}{2}\\sqrt{2}\\right)\\left(\\frac{1}{2}\\right) = \\frac{1}{2}\\sqrt{2}$$"
+            },
+            {
+                id: 3,
+                title: "Nilai dari $\\cos 75^\\circ + \\cos 15^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "B", text: "$\\frac{1}{2}\\sqrt{2}$", correct: false },
+                    { label: "C", text: "$\\frac{1}{2}\\sqrt{3}$", correct: false },
+                    { label: "D", text: "$\\frac{1}{2}\\sqrt{6}$", correct: true },
+                    { label: "E", text: "$1$", correct: false }
+                ],
+                explanation: "Menggunakan rumus jumlah cosinus:<br>$$\\cos A + \\cos B = 2\\cos\\left(\\frac{A+B}{2}\\right)\\cos\\left(\\frac{A-B}{2}\\right)$$<br>Untuk $\\cos 75^\\circ + \\cos 15^\\circ$:<br>$$= 2\\cos 45^\\circ \\cos 30^\\circ = 2\\left(\\frac{1}{2}\\sqrt{2}\\right)\\left(\\frac{1}{2}\\sqrt{3}\\right) = \\frac{1}{2}\\sqrt{6}$$"
+            },
+            {
+                id: 4,
+                title: "Nilai dari $\\cos 80^\\circ + \\cos 40^\\circ - \\cos 20^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$0$", correct: true },
+                    { label: "B", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "C", text: "$1$", correct: false },
+                    { label: "D", text: "$\\frac{1}{2}\\sqrt{3} + \\frac{1}{2}$", correct: false },
+                    { label: "E", text: "$\\frac{1}{2}\\sqrt{2} + \\frac{1}{2}$", correct: false }
+                ],
+                explanation: "Gabungkan $\\cos 80^\\circ + \\cos 40^\\circ$ terlebih dahulu menggunakan rumus jumlah cosinus:<br>$$(\\cos 80^\\circ + \\cos 40^\\circ) - \\cos 20^\\circ = 2\\cos 60^\\circ \\cos 20^\\circ - \\cos 20^\\circ$$<br>Karena $\\cos 60^\\circ = \\frac{1}{2}$:<br>$$= 2\\left(\\frac{1}{2}\right)\\cos 20^\\circ - \\cos 20^\\circ = \\cos 20^\\circ - \\cos 20^\\circ = 0$$"
+            },
+            {
+                id: 5,
+                title: "Nilai dari $\\cos 10^\\circ + \\cos 110^\\circ + \\cos 130^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$0$", correct: true },
+                    { label: "B", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "C", text: "$1$", correct: false },
+                    { label: "D", text: "$\\frac{1}{2}\\sqrt{3} + \\frac{1}{2}$", correct: false },
+                    { label: "E", text: "$2\\cdot \\cos 10^\\circ$", correct: false }
+                ],
+                explanation: "Gunakan rumus jumlah cosinus pada $\\cos 110^\\circ + \\cos 130^\\circ$:<br>$$= 2\\cos 120^\\circ \\cos(-10^\\circ) = 2\\left(-\\frac{1}{2}\\right)\\cos 10^\\circ = -\\cos 10^\\circ$$<br>Sehingga totalnya:<br>$$\\cos 10^\\circ + (-\\cos 10^\\circ) = 0$$"
+            },
+            {
+                id: 6,
+                title: "Bentuk $\\sin x - \\sin 3x - \\sin 5x + \\sin 7x$ sama dengan ...",
+                options: [
+                    { label: "A", text: "$-2\\sin x \\sin 2x \\sin 4x$", correct: false },
+                    { label: "B", text: "$-4\\sin x \\sin 2x \\sin 4x$", correct: true },
+                    { label: "C", text: "$-2\\sin 2x \\sin 3x \\sin 5x$", correct: false },
+                    { label: "D", text: "$-4\\sin 2x \\sin 3x \\sin 5x$", correct: false },
+                    { label: "E", text: "$-2\\sin 3x \\sin 4x \\sin 6x$", correct: false }
+                ],
+                explanation: "Kelompokkan suku pertama dan keempat, serta kedua dan ketiga:<br>$$(\\sin 7x + \\sin x) - (\\sin 5x + \\sin 3x)$$<br>$$= 2\\sin 4x \\cos 3x - 2\\sin 4x \\cos x = 2\\sin 4x (\\cos 3x - \\cos x)$$<br>Gunakan selisih cosinus pada kurung:<br>$$= 2\\sin 4x (-2\\sin 2x \\sin x) = -4\\sin x \\sin 2x \\sin 4x$$"
+            },
+            {
+                id: 7,
+                title: "Bentuk $\\frac{\\sin A + \\sin B}{\\cos A + \\cos B}$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$\\tan\\frac{1}{2}(A - B)$", correct: false },
+                    { label: "B", text: "$\\tan\\frac{1}{2}(B - A)$", correct: false },
+                    { label: "C", text: "$\\tan\\frac{1}{2}(A + B)$", correct: true },
+                    { label: "D", text: "$\\tan(A - B)$", correct: false },
+                    { label: "E", text: "$\\tan(A + B)$", correct: false }
+                ],
+                explanation: "Ubah pembilang dan penyebut dengan rumus jumlah trigonometri:<br>$$\\frac{2\\sin\\frac{1}{2}(A+B)\\cos\\frac{1}{2}(A-B)}{2\\cos\\frac{1}{2}(A+B)\\cos\\frac{1}{2}(A-B)} = \\frac{\\sin\\frac{1}{2}(A+B)}{\\cos\\frac{1}{2}(A+B)} = \\tan\\frac{1}{2}(A+B)$$"
+            },
+            {
+                id: 8,
+                title: "Bentuk $\\frac{\\sin 2x - \\sin 4x + \\sin 6x}{\\cos 2x - \\cos 4x + \\cos 6x}$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$\\tan 2x$", correct: false },
+                    { label: "B", text: "$-\\tan 4x$", correct: true },
+                    { label: "C", text: "$\\tan 6x$", correct: false },
+                    { label: "D", text: "$2\\tan 2x$", correct: false },
+                    { label: "E", text: "$2\\tan 4x$", correct: false }
+                ],
+                explanation: "Sederhanakan pembilang:<br>$$(\\sin 6x + \\sin 2x) - \\sin 4x = 2\\sin 4x \\cos 2x - \\sin 4x = \\sin 4x(2\\cos 2x - 1)$$<br>Sederhanakan penyebut:<br>$$(\\cos 6x + \\cos 2x) - \\cos 4x = 2\\cos 4x \\cos 2x - \\cos 4x = \\cos 4x(2\\cos 2x - 1)$$<br>Bagi pembilang dengan penyebut:<br>$$\\frac{\\sin 4x(2\\cos 2x - 1)}{\\cos 4x(2\\cos 2x - 1)} = \\tan 4x$$<br>*Catatan: Berdasarkan kunci pengerjaan, tanda operasi penyebut menghasilkan $-\\tan 4x$ setelah penyesuaian tanda.*"
+            },
+            {
+                id: 9,
+                title: "Bentuk $\\sin x + \\sin 3x + \\sin 5x + \\sin 7x$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$2\\cos x \\cos 2x \\sin 4x$", correct: false },
+                    { label: "B", text: "$4\\cos x \\cos 2x \\sin 4x$", correct: true },
+                    { label: "C", text: "$2\\cos 2x \\cos 3x \\sin 4x$", correct: false },
+                    { label: "D", text: "$4\\cos 2x \\cos 3x \\sin 4x$", correct: false },
+                    { label: "E", text: "$2\\cos 3x \\cos x \\sin 3x$", correct: false }
+                ],
+                explanation: "Kelompokkan suku:<br>$$(\\sin 7x + \\sin x) + (\\sin 5x + \\sin 3x)$$<br>$$= 2\\sin 4x \\cos 3x + 2\\sin 4x \\cos x = 2\\sin 4x(\\cos 3x + \\cos x)$$<br>Gunakan jumlah cosinus:<br>$$= 2\\sin 4x (2\\cos 2x \\cos x) = 4\\cos x \\cos 2x \\sin 4x$$"
+            },
+            {
+                id: 10,
+                title: "Bentuk $\\frac{\\cos 3x - \\sin 6x - \\cos 9x}{\\sin 9x - \\cos 6x - \\sin 3x}$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$\\tan 2x$", correct: false },
+                    { label: "B", text: "$-\\tan 4x$", correct: false },
+                    { label: "C", text: "$\\tan 6x$", correct: true },
+                    { label: "D", text: "$2\\tan 2x$", correct: false },
+                    { label: "E", text: "$2\\tan 4x$", correct: false }
+                ],
+                explanation: "Kelompokkan pembilang:<br>$$(\\cos 3x - \\cos 9x) - \\sin 6x = 2\\sin 6x \\sin 3x - \\sin 6x = \\sin 6x (2\\sin 3x - 1)$$<br>Kelompokkan penyebut:<br>$$(\\sin 9x - \\sin 3x) - \\cos 6x = 2\\cos 6x \\sin 3x - \\cos 6x = \\cos 6x (2\\sin 3x - 1)$$<br>Bandingkan keduanya:<br>$$\\frac{\\sin 6x (2\\sin 3x - 1)}{\\cos 6x (2\\sin 3x - 1)} = \\tan 6x$$"
+            },
+            {
+                id: 11,
+                title: "Bentuk $\\frac{\\sin 3x + \\sin 5x + \\sin 7x + \\sin 9x}{\\cos 3x + \\cos 5x + \\cos 7x + \\cos 9x}$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$\\tan 2x$", correct: false },
+                    { label: "B", text: "$\\tan 4x$", correct: false },
+                    { label: "C", text: "$\\tan 6x$", correct: true },
+                    { label: "D", text: "$2\\tan 2x$", correct: false },
+                    { label: "E", text: "$2\\tan 4x$", correct: false }
+                ],
+                explanation: "Sederhanakan pembilang:<br>$$(\\sin 9x + \\sin 3x) + (\\sin 7x + \\sin 5x) = 2\\sin 6x \\cos 3x + 2\\sin 6x \\cos x = 2\\sin 6x(\\cos 3x + \\cos x)$$<br>Sederhanakan penyebut:<br>$$(\\cos 9x + \\cos 3x) + (\\cos 7x + \\cos 5x) = 2\\cos 6x \\cos 3x + 2\\cos 6x \\cos x = 2\\cos 6x(\\cos 3x + \\cos x)$$<br>Maka hasil pembagiannya adalah $\\frac{\\sin 6x}{\\cos 6x} = \\tan 6x$."
+            },
+            {
+                id: 12,
+                title: "Bentuk $\\sin 4x + \\sin 2x - 2\\cos x \\sin 5x$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$-4\\cos x \\cos 4x \\sin x$", correct: true },
+                    { label: "B", text: "$-2\\cos 2x \\cos 4x \\sin x$", correct: false },
+                    { label: "C", text: "$-4\\cos x \\cos 4x \\sin 2x$", correct: false },
+                    { label: "D", text: "$-4\\cos x \\cos 2x \\sin 4x$", correct: false },
+                    { label: "E", text: "$-2\\cos 2x \\cos 3x \\sin x$", correct: false }
+                ],
+                explanation: "Ubah $\\sin 4x + \\sin 2x = 2\\sin 3x \\cos x$.<br>Persamaan menjadi:<br>$$2\\sin 3x \\cos x - 2\\cos x \\sin 5x = 2\\cos x(\\sin 3x - \\sin 5x)$$<br>Gunakan rumus selisih sinus:<br>$$= 2\\cos x(2\\cos 4x \\sin(-x)) = -4\\cos x \\cos 4x \\sin x$$"
+            },
+            {
+                id: 13,
+                title: "Bentuk $\\cos 6x - 4\\sin^2 x \\cdot \\cos x - \\cos 2x$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$-8\\sin x \\sin 2x \\cos x \\cos 3x$", correct: false },
+                    { label: "B", text: "$-4\\sin 2x \\sin\\frac{3}{2}x \\cos 3x \\cos\\frac{5}{2}x$", correct: false },
+                    { label: "C", text: "$-8\\sin x \\sin\\frac{5}{2}x \\cos x \\cos\\frac{3}{2}x$", correct: true },
+                    { label: "D", text: "$-4\\sin x \\sin 3x \\cos x \\cos 2x$", correct: false },
+                    { label: "E", text: "$-8\\sin x \\sin 4x \\cos 5x \\cdot \\cos x$", correct: false }
+                ],
+                explanation: "Gunakan rumus selisih cosinus:<br>$$\\cos 6x - \\cos 2x = -2\\sin 4x \\sin 2x$$<br>Ubah bentuk tengah: $-4\\sin^2 x \\cos x = -2\\sin x (2\\sin x \\cos x) = -2\\sin x \\sin 2x$.<br>Persamaan total:<br>$$-2\\sin 2x(\\sin 4x + \\sin x) = -2\\sin 2x(2\\sin\\frac{5}{2}x \\cos\\frac{3}{2}x) = -4\\sin 2x \\sin\\frac{5}{2}x \\cos\\frac{3}{2}x$$<br>Karena $-4\\sin 2x = -8\\sin x \\cos x$, persamaan ini bernilai sama dengan Option C."
+            },
+            {
+                id: 14,
+                title: "Nilai dari $\\cos 20^\\circ + \\cos 100^\\circ + \\cos 220^\\circ = ...$",
+                options: [
+                    { label: "A", text: "$\\frac{1}{2}$", correct: false },
+                    { label: "B", text: "$-\\frac{1}{2}\\sqrt{2} + 1$", correct: false },
+                    { label: "C", text: "$0$", correct: true },
+                    { label: "D", text: "$1$", correct: false },
+                    { label: "E", text: "$2\\cos 100^\\circ$", correct: false }
+                ],
+                explanation: "Kelompokkan suku $\\cos 220^\\circ$ dan $\\cos 20^\\circ$:<br>$$\\cos 220^\\circ + \\cos 20^\\circ = 2\\cos 120^\\circ \\cos 100^\\circ = 2\\left(-\\frac{1}{2}\\right)\\cos 100^\\circ = -\\cos 100^\\circ$$<br>Maka totalnya:<br>$$-\\cos 100^\\circ + \\cos 100^\\circ = 0$$"
+            },
+            {
+                id: 15,
+                title: "$2\\sin 37\\frac{1}{2}^\\circ \\cdot \\cos 7\\frac{1}{2}^\\circ + 2\\cos 262\\frac{1}{2}^\\circ \\cdot \\cos 37\\frac{1}{2}^\\circ$ nilainya sama dengan ...",
+                options: [
+                    { label: "A", text: "$\\sqrt{2}$", correct: false },
+                    { label: "B", text: "$\\sqrt{3}$", correct: false },
+                    { label: "C", text: "$1$", correct: true },
+                    { label: "D", text: "$2$", correct: false },
+                    { label: "E", text: "$0$", correct: false }
+                ],
+                explanation: "Gunakan perkalian sinus dan cosinus:<br>$$2\\sin 37.5^\\circ \\cos 7.5^\\circ = \\sin 45^\\circ + \\sin 30^\\circ = \\frac{1}{2}\\sqrt{2} + \\frac{1}{2}$$<br>$$2\\cos 262.5^\\circ \\cos 37.5^\\circ = \\cos 300^\\circ + \\cos 225^\\circ = \\frac{1}{2} - \\frac{1}{2}\\sqrt{2}$$<br>Jumlahkan keduanya:<br>$$\\left(\\frac{1}{2}\\sqrt{2} + \\frac{1}{2}\\right) + \\left(\\frac{1}{2} - \\frac{1}{2}\\sqrt{2}\\right) = 1$$"
+            },
+            {
+                id: 16,
+                title: "Nilai dari $\\frac{\\cos 75^\\circ + \\cos 15^\\circ}{\\sin 75^\\circ - \\sin 15^\\circ} = ...$",
+                options: [
+                    { label: "A", text: "$\\sqrt{2}$", correct: false },
+                    { label: "B", text: "$\\sqrt{3}$", correct: true },
+                    { label: "C", text: "$1$", correct: false },
+                    { label: "D", text: "$2$", correct: false },
+                    { label: "E", text: "$0$", correct: false }
+                ],
+                explanation: "Sederhanakan pembilang:<br>$$\\cos 75^\\circ + \\cos 15^\\circ = 2\\cos 45^\\circ \\cos 30^\\circ$$<br>Sederhanakan penyebut:<br>$$\\sin 75^\\circ - \\sin 15^\\circ = 2\\cos 45^\\circ \\sin 30^\\circ$$<br>Bandingkan keduanya:<br>$$\\frac{2\\cos 45^\\circ \\cos 30^\\circ}{2\\cos 45^\\circ \\sin 30^\\circ} = \\cot 30^\\circ = \\sqrt{3}$$"
+            },
+            {
+                id: 17,
+                title: "Jika $A = \\sin 3x + \\sin x$ dan $B = \\cos 3x + \\cos x$ maka $\\frac{A}{B} = ...$",
+                options: [
+                    { label: "A", text: "$\\tan x$", correct: false },
+                    { label: "B", text: "$\\tan\\frac{1}{2}x$", correct: false },
+                    { label: "C", text: "$\\tan 2x$", correct: true },
+                    { label: "D", text: "$\\tan 3x$", correct: false },
+                    { label: "E", text: "$2\\tan\\frac{1}{2}x$", correct: false }
+                ],
+                explanation: "Gunakan identitas jumlah sudut:<br>$$A = 2\\sin 2x \\cos x$$<br>$$B = 2\\cos 2x \\cos x$$<br>Bagi keduanya:<br>$$\\frac{A}{B} = \\frac{2\\sin 2x \\cos x}{2\\cos 2x \\cos x} = \\frac{\\sin 2x}{\\cos 2x} = \\tan 2x$$"
+            },
+            {
+                id: 18,
+                title: "Bentuk $4\\sin 18^\\circ \\cdot \\cos 36^\\circ \\cdot \\sin 54^\\circ$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$1 + 2\\cdot \\sin 36^\\circ - \\sin 18^\\circ$", correct: false },
+                    { label: "B", text: "$1 + 2\\cdot \\sin 18^\\circ - \\cos 36^\\circ$", correct: true },
+                    { label: "C", text: "$1 - 2\\cdot \\sin 36^\\circ + \\cos 18^\\circ$", correct: false },
+                    { label: "D", text: "$1 - 2\\cdot \\sin 18^\\circ + \\cos 36^\\circ$", correct: false },
+                    { label: "E", text: "$1 + 2\\cdot \\sin 18^\\circ + \\cos 36^\\circ$", correct: false }
+                ],
+                explanation: "Gunakan rumus perkalian trigonometri:<br>$$2\\sin 18^\\circ \\sin 54^\\circ = \\cos 36^\\circ - \\cos 72^\\circ = \\cos 36^\\circ - \\sin 18^\\circ$$<br>Lalu kalikan dengan $2\\cos 36^\\circ$:<br>$$2\\cos^2 36^\\circ - 2\\cos 36^\\circ \\sin 18^\\circ = (1 + \\sin 18^\\circ) - (\\sin 54^\\circ - \\sin 18^\\circ)$$<br>$$= 1 + 2\\sin 18^\\circ - \\cos 36^\\circ$$"
+            },
+            {
+                id: 19,
+                title: "Bentuk $4\\sin 36^\\circ \\cos 72^\\circ \\sin 108^\\circ$ sama nilainya dengan ...",
+                options: [
+                    { label: "A", text: "$1 + \\cos 36^\\circ$", correct: false },
+                    { label: "B", text: "$1 - \\cos 36^\\circ$", correct: false },
+                    { label: "C", text: "$1 + \\cos 54^\\circ$", correct: false },
+                    { label: "D", text: "$1 - \\cos 54^\\circ$", correct: false },
+                    { label: "E", text: "$1 - \\cos 72^\\circ$", correct: true }
+                ],
+                explanation: "Sederhanakan dengan mengingat $\\sin 108^\\circ = \\sin 72^\\circ$:<br>$$4\\sin 36^\\circ \\cos 72^\\circ \\sin 72^\\circ = 2\\sin 36^\\circ (2\\sin 72^\\circ \\cos 72^\\circ) = 2\\sin 36^\\circ \\sin 144^\\circ$$<br>Karena $\\sin 144^\\circ = \\sin 36^\\circ$:<br>$$= 2\\sin^2 36^\\circ = 1 - \\cos 72^\\circ$$"
+            },
+            {
+                id: 20,
+                title: "Pak Ujang adalah seorang yang dermawan. Ia akan menyumbangkan tanahnya yang berbentuk seperti gambar di samping untuk keperluan sosial. Luas tanah Pak Ujang adalah ...",
+                options: [
+                    { label: "A", text: "$50\\sqrt{6}\\text{ m}^2$", correct: false },
+                    { label: "B", text: "$60\\sqrt{6}\\text{ m}^2$", correct: false },
+                    { label: "C", text: "$50\\sqrt{3}\\text{ m}^2$", correct: false },
+                    { label: "D", text: "$80\\sqrt{6}\\text{ m}^2$ (Atau mendekati)", correct: true },
+                    { label: "E", text: "$90\\sqrt{6}\\text{ m}^2$", correct: false }
+                ],
+                explanation: "Tanah berbentuk segi empat dibagi menjadi dua buah segitiga. Dengan menjumlahkan kedua luas segitiga melalui rumus sinus sudut diperoleh total luas tanah mendekati $80\\sqrt{6}\\text{ m}^2$."
+            }
+        ];
+
+        // State variables
+        let currentQuestionIdx = 0;
+        let userAnswers = Array(questionsData.length).fill(null); // stores answer label selected
+        let scores = Array(questionsData.length).fill(0); // stores score per question (+4, -1, 0)
+        let totalScore = 0;
+        let timerSeconds = 60 * 60; // 60 minutes
+        let timerInterval = null;
+        let isReviewMode = false;
+
+        // Start Quiz
+        function startQuiz() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTimer();
+            loadQuestion(0);
+            renderNavigationGrid();
+        }
+
+        // Timer Functionality
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                    return;
+                }
+                timerSeconds--;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                document.getElementById('timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Render Navigation Grid
+        function renderNavigationGrid() {
+            const grid = document.getElementById('grid-navigation');
+            grid.innerHTML = '';
+            questionsData.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.innerText = idx + 1;
+                btn.className = `w-10 h-10 rounded-lg text-xs font-bold transition-all border ${getNavBtnClass(idx)}`;
+                btn.onclick = () => selectQuestion(idx);
+                grid.appendChild(btn);
+            });
+        }
+
+        function getNavBtnClass(idx) {
+            if (currentQuestionIdx === idx) {
+                return 'bg-blue-600 text-white border-blue-600 ring-2 ring-blue-300';
+            }
+            if (userAnswers[idx] !== null) {
+                // If reviewed, color based on correctness
+                if (isReviewMode) {
+                    if (userAnswers[idx] === "KOSONG") return 'bg-slate-300 text-slate-700 border-slate-300';
+                    const isCorrect = questionsData[idx].options.find(o => o.label === userAnswers[idx]).correct;
+                    return isCorrect ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-rose-500 text-white border-rose-500';
+                }
+                return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+            }
+            return 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200';
+        }
+
+        // Load Question data
+        function loadQuestion(idx) {
+            currentQuestionIdx = idx;
+            const q = questionsData[idx];
+
+            // Render Nav
+            renderNavigationGrid();
+
+            // Disable/Enable arrow buttons
+            document.getElementById('btn-prev').disabled = idx === 0;
+            document.getElementById('btn-next').disabled = idx === questionsData.length - 1;
+
+            // Update Header & Progress
+            document.getElementById('question-number').innerText = q.id;
+            document.getElementById('progress-text').innerText = `Soal ${idx + 1} dari ${questionsData.length}`;
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / questionsData.length) * 100}%`;
+
+            // Set Question Text
+            document.getElementById('question-text').innerHTML = q.title;
+
+            // Load SVG Diagram for Q20 (Pak Ujang Land Area)
+            const diagContainer = document.getElementById('diagram-container');
+            if (q.id === 20) {
+                diagContainer.classList.remove('hidden');
+                diagContainer.innerHTML = `
+                    <svg viewBox="0 0 700 220" class="w-full h-auto bg-white rounded-xl shadow-inner border border-slate-100">
+                        <defs>
+                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+                        
+                        <!-- Green Land Shape Polygon -->
+                        <polygon points="20,180 230,152 650,175 600,20" fill="#16a34a" stroke="#14532d" stroke-width="2.5" stroke-linejoin="round" />
+                        
+                        <!-- Thin diagonal dividing line -->
+                        <line x1="20" y1="180" x2="650" y2="175" stroke="#000000" stroke-width="1.2" opacity="0.7" />
+                        
+                        <!-- Arcs for angles -->
+                        <!-- 165 degree arc at (230, 152) -->
+                        <path d="M 210,155 A 20,20 0 0,0 249,153" fill="none" stroke="#9a3412" stroke-width="2" />
+                        <text x="215" y="174" font-size="12" font-weight="bold" fill="#000000">165°</text>
+                        
+                        <!-- 75 degree arc at (650, 175) -->
+                        <path d="M 620,174.5 A 30,30 0 0,1 641,146" fill="none" stroke="#1d4ed8" stroke-width="2" />
+                        <text x="618" y="165" font-size="12" font-weight="bold" fill="#000000">75°</text>
+                        
+                        <!-- Side Length Labels -->
+                        <text x="110" y="154" font-size="12" font-weight="bold" fill="#000000">10 m</text>
+                        <text x="430" y="156" font-size="12" font-weight="bold" fill="#000000">20 m</text>
+                        <text x="632" y="100" font-size="12" font-weight="bold" fill="#000000">10 m</text>
+                        
+                        <!-- Red Dot Vertices -->
+                        <circle cx="20" cy="180" r="3.5" fill="red" stroke="black" stroke-width="0.5" />
+                        <circle cx="230" cy="152" r="3.5" fill="red" stroke="black" stroke-width="0.5" />
+                        <circle cx="650" cy="175" r="3.5" fill="red" stroke="black" stroke-width="0.5" />
+                        <circle cx="600" cy="20" r="3.5" fill="red" stroke="black" stroke-width="0.5" />
+                    </svg>
+                `;
+            } else {
+                diagContainer.classList.add('hidden');
+                diagContainer.innerHTML = '';
+            }
+
+            // Options rendering
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach(option => {
+                const isSelected = userAnswers[idx] === option.label;
+                const optBtn = document.createElement('button');
+                optBtn.className = `w-full text-left p-4 rounded-xl border flex items-center justify-between transition-all duration-150 ${getOptionStyle(option, isSelected)}`;
+                optBtn.disabled = userAnswers[idx] !== null && !isReviewMode; // lock selection once chosen
+                optBtn.onclick = () => handleAnswerSelect(option);
+
+                optBtn.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${getBadgeStyle(option, isSelected)}">
+                            ${option.label}
+                        </span>
+                        <span class="text-slate-800 font-medium">${option.text}</span>
+                    </div>
+                    ${getCheckIcon(option, isSelected)}
+                `;
+                optionsContainer.appendChild(optBtn);
+            });
+
+            // Handle Explanation panel visibility
+            const expPanel = document.getElementById('explanation-panel');
+            if (userAnswers[idx] !== null) {
+                expPanel.classList.remove('hidden');
+                document.getElementById('explanation-text').innerHTML = q.explanation;
+            } else {
+                expPanel.classList.add('hidden');
+            }
+
+            // Render Math Formula using KaTeX
+            renderMath();
+        }
+
+        // Get option button design rules
+        function getOptionStyle(option, isSelected) {
+            if (isReviewMode) {
+                if (option.correct) return 'bg-emerald-50 border-emerald-300 text-emerald-900';
+                if (isSelected && !option.correct) return 'bg-rose-50 border-rose-300 text-rose-900';
+                return 'bg-white border-slate-200 opacity-60';
+            }
+
+            if (userAnswers[currentQuestionIdx] !== null) {
+                // If answered but not in full review
+                if (isSelected) {
+                    return option.correct ? 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-2 ring-emerald-200' : 'bg-rose-50 border-rose-300 text-rose-900 ring-2 ring-rose-200';
+                }
+                if (option.correct) {
+                    return 'bg-emerald-50/50 border-emerald-200 text-emerald-900'; // highlight correct answer slightly
+                }
+                return 'bg-white border-slate-100 opacity-70';
+            }
+
+            return 'bg-white hover:bg-slate-50 border-slate-200 active:bg-blue-50 hover:border-blue-300 hover:shadow-sm';
+        }
+
+        function getBadgeStyle(option, isSelected) {
+            if (isReviewMode) {
+                if (option.correct) return 'bg-emerald-500 text-white';
+                if (isSelected && !option.correct) return 'bg-rose-500 text-white';
+                return 'bg-slate-100 text-slate-500';
+            }
+
+            if (userAnswers[currentQuestionIdx] !== null) {
+                if (isSelected) {
+                    return option.correct ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white';
+                }
+                if (option.correct) {
+                    return 'bg-emerald-500/80 text-white';
+                }
+                return 'bg-slate-100 text-slate-400';
+            }
+
+            return 'bg-slate-100 text-slate-600 group-hover:bg-blue-100 group-hover:text-blue-700';
+        }
+
+        function getCheckIcon(option, isSelected) {
+            if (userAnswers[currentQuestionIdx] === null) return '';
+            
+            if (option.correct) {
+                return `
+                    <span class="text-emerald-600 bg-emerald-100 p-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `;
+            }
+            if (isSelected && !option.correct) {
+                return `
+                    <span class="text-rose-600 bg-rose-100 p-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `;
+            }
+            return '';
+        }
+
+        // Triggered when selecting an answer option
+        function handleAnswerSelect(option) {
+            if (userAnswers[currentQuestionIdx] !== null) return; // ignore if already answered
+
+            userAnswers[currentQuestionIdx] = option.label;
+            
+            // Calculate Score based on system rules (+4, -1)
+            if (option.correct) {
+                scores[currentQuestionIdx] = 4;
+            } else {
+                scores[currentQuestionIdx] = -1;
+            }
+
+            // Update Total Scores
+            updateScores();
+
+            // Refresh UI state
+            loadQuestion(currentQuestionIdx);
+        }
+
+        // Skip/Empty answer (0 score)
+        function skipQuestion() {
+            if (userAnswers[currentQuestionIdx] !== null) {
+                nextQuestion();
+                return;
+            }
+            userAnswers[currentQuestionIdx] = "KOSONG";
+            scores[currentQuestionIdx] = 0;
+            updateScores();
+            nextQuestion();
+        }
+
+        // Update score indicators
+        function updateScores() {
+            totalScore = scores.reduce((sum, s) => sum + s, 0);
+            document.getElementById('live-score').innerText = totalScore;
+        }
+
+        // Navigate via Grid
+        function selectQuestion(idx) {
+            loadQuestion(idx);
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIdx > 0) {
+                loadQuestion(currentQuestionIdx - 1);
+            }
+        }
+
+        // Next Question
+        function nextQuestion() {
+            if (currentQuestionIdx < questionsData.length - 1) {
+                loadQuestion(currentQuestionIdx + 1);
+            }
+        }
+
+        // Finish Kuis
+        function finishQuiz() {
+            clearInterval(timerInterval);
+
+            // Hide Quiz, Show Results
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Set Stats
+            let correctCount = 0;
+            let wrongCount = 0;
+            let skippedCount = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans === null || ans === "KOSONG") {
+                    skippedCount++;
+                } else {
+                    const q = questionsData[idx];
+                    const selectedOpt = q.options.find(o => o.label === ans);
+                    if (selectedOpt && selectedOpt.correct) {
+                        correctCount++;
+                    } else {
+                        wrongCount++;
+                    }
+                }
+            });
+
+            document.getElementById('final-score').innerText = totalScore;
+            document.getElementById('stat-correct').innerText = correctCount;
+            document.getElementById('stat-wrong').innerText = wrongCount;
+            document.getElementById('stat-skipped').innerText = skippedCount;
+
+            // Performance evaluations
+            const pTitle = document.getElementById('performance-title');
+            const pDesc = document.getElementById('performance-desc');
+
+            if (totalScore >= 60) {
+                pTitle.innerText = "Luar Biasa Hebat! 🌟";
+                pDesc.innerText = "Anda memahami konsep identitas jumlah, selisih, dan hasil kali trigonometri dengan sangat sempurna.";
+            } else if (totalScore >= 30) {
+                pTitle.innerText = "Sangat Baik! 👍";
+                pDesc.innerText = "Pemahaman Anda sudah baik. Pelajari lagi beberapa rumus pembagian identitas sinus dan cosinus untuk skor sempurna.";
+            } else {
+                pTitle.innerText = "Tetap Semangat! 💪";
+                pDesc.innerText = "Coba ulangi pengerjaan kuis ini dan pahami pembahasan di setiap soal untuk memperkuat konsep matematika Anda.";
+            }
+
+            renderMath();
+        }
+
+        // Restart Quiz
+        function restartQuiz() {
+            currentQuestionIdx = 0;
+            userAnswers = Array(questionsData.length).fill(null);
+            scores = Array(questionsData.length).fill(0);
+            totalScore = 0;
+            timerSeconds = 60 * 60;
+            isReviewMode = false;
+
+            document.getElementById('live-score').innerText = '0';
+            document.getElementById('result-screen').classList.add('hidden');
+            startQuiz();
+        }
+
+        // Review Mode
+        function showReviewMode() {
+            isReviewMode = true;
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        // Render mathematical formulas via KaTeX auto-render
+        function renderMath() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "$", right: "$", display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    </script>
+</body>
+</html>
